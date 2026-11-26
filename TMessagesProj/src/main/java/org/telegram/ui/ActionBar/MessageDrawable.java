@@ -589,7 +589,7 @@ public class MessageDrawable extends Drawable {
             return;
         }
         Rect bounds = getBounds();
-        boolean neon = paintToUse == null && !renderingBackgroundCache && !isSelected && currentType == TYPE_TEXT && paint.getStyle() == Paint.Style.FILL;
+        boolean neon = org.telegram.messenger.ApplicationLoader.applicationContext != null && org.telegram.ui.neon.NeonPreferences.enabled(org.telegram.messenger.ApplicationLoader.applicationContext) && paintToUse == null && !renderingBackgroundCache && !isSelected && currentType == TYPE_TEXT && paint.getStyle() == Paint.Style.FILL;
         if (!neon && paintToUse == null && paint.getStyle() == Paint.Style.FILL && gradientShader == null && overrideRoundRadius == 0 && overrideRounding <= 0) {
             Drawable background = getBackgroundDrawable();
             if (background != null) {
@@ -651,7 +651,7 @@ public class MessageDrawable extends Drawable {
         canvas.drawPath(path, p);
         if (neon) {
             if (neonOverlay == null) neonOverlay = new org.telegram.ui.neon.NeonBubbleOverlay();
-            neonOverlay.draw(canvas, path, AndroidUtilities.density, alpha);
+            neonOverlay.draw(canvas, path, AndroidUtilities.density, alpha * org.telegram.ui.neon.NeonPreferences.intensity(org.telegram.messenger.ApplicationLoader.applicationContext) / 100);
         }
         if (gradientShader != null && isSelected && paintToUse == null) {
             int color = getColor(Theme.key_chat_outBubbleGradientSelectedOverlay);
