@@ -32,6 +32,14 @@ jobs:
           "$SDKMANAGER" --sdk_root="$SDK_ROOT" 'platforms;android-36' 'build-tools;36.0.0' 'ndk;27.2.12479018' 'cmake;3.22.1'
       - name: Compile sandbox Java
         run: bash gradlew :TMessagesProj_App:compileAfatDebugJavaWithJavac --no-daemon
+      - name: Verify dedicated API availability
+        env:
+          NEON_API_ID: ${{ secrets.NEON_API_ID }}
+          NEON_API_HASH: ${{ secrets.NEON_API_HASH }}
+        run: |
+          if [ -z "$NEON_API_ID" ] || [ -z "$NEON_API_HASH" ]; then
+            echo '::warning::Dedicated API missing; no installable APK will be produced.'
+          fi
       - name: Build APK with dedicated API
         env:
           NEON_API_ID: ${{ secrets.NEON_API_ID }}
@@ -46,4 +54,4 @@ jobs:
         with:
           name: gromanof-neon-sandbox
           path: TMessagesProj_App/build/outputs/apk/afat/debug/*.apk
-          if-no-files-found: ignore
+          if-no-files-found: warn
