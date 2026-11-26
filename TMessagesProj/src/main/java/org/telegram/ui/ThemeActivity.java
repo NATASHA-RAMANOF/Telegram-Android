@@ -227,6 +227,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
     private int editThemeRow;
     @Keep
     private int createNewThemeRow;
+    private int neonStudioRow;
     private int lastShadowRow;
     @Keep
     private int stickersRow;
@@ -712,6 +713,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
         themePreviewRow = -1;
         editThemeRow = -1;
         createNewThemeRow = -1;
+        neonStudioRow = -1;
 
         appIconHeaderRow = -1;
         appIconSelectorRow = -1;
@@ -763,6 +765,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
             textSizeHeaderRow = rowCount++;
             textSizeRow = rowCount++;
             backgroundRow = rowCount++;
+            neonStudioRow = rowCount++;
             changeUserColor = rowCount++;
             newThemeInfoRow = rowCount++;
             themeHeaderRow = rowCount++;
@@ -1214,7 +1217,9 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
         ((DefaultItemAnimator) listView.getItemAnimator()).setDelayAnimations(false);
         frameLayout.addView(listView, LayoutHelper.createFrame(LayoutHelper.MATCH_PARENT, LayoutHelper.MATCH_PARENT));
         listView.setOnItemClickListener((view, position, x, y) -> {
-            if (position == enableAnimationsRow) {
+            if (position == neonStudioRow) {
+                if (getParentActivity() != null) org.telegram.ui.neon.NeonStudio.show(getParentActivity(), () -> { if (listView != null) listView.invalidate(); });
+            } else if (position == enableAnimationsRow) {
                 SharedPreferences preferences = MessagesController.getGlobalMainSettings();
                 boolean animations = preferences.getBoolean("view_animations", true);
                 SharedPreferences.Editor editor = preferences.edit();
@@ -2786,6 +2791,10 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                         cell.setSubtitle(null);
                         cell.setColors(Theme.key_windowBackgroundWhiteBlueText4, Theme.key_windowBackgroundWhiteBlueText4);
                         cell.setTextAndIcon(getString(R.string.EditCurrentTheme), R.drawable.msg_theme, true);
+                    } else if (position == neonStudioRow) {
+                        cell.setSubtitle(null);
+                        cell.setColors(Theme.key_windowBackgroundWhiteBlueText4, Theme.key_windowBackgroundWhiteBlueText4);
+                        cell.setTextAndIcon("GROMANOF Neon Studio", R.drawable.msg_colors, true);
                     } else if (position == createNewThemeRow) {
                         cell.setSubtitle(null);
                         cell.setColors(Theme.key_windowBackgroundWhiteBlueText4, Theme.key_windowBackgroundWhiteBlueText4);
@@ -2877,7 +2886,7 @@ public class ThemeActivity extends BaseFragment implements NotificationCenter.No
                 return TYPE_THEME_ACCENT_LIST;
             } else if (position == bubbleRadiusRow) {
                 return TYPE_BUBBLE_RADIUS;
-            } else if (position == backgroundRow || position == editThemeRow || position == createNewThemeRow ||
+            } else if (position == neonStudioRow || position == backgroundRow || position == editThemeRow || position == createNewThemeRow ||
                         position == liteModeRow || position == stickersRow) {
                 return TYPE_TEXT_PREFERENCE;
             } else if (position == swipeGestureRow) {
