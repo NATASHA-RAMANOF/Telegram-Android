@@ -41,18 +41,35 @@ jobs:
           if [ -z "$NEON_API_ID" ] || [ -z "$NEON_API_HASH" ]; then
             echo '::warning::Dedicated API missing; no installable APK will be produced.'
           fi
+      - name: Prepare dedicated Firebase configuration
+        env:
+          NEON_GOOGLE_SERVICES_JSON: ${{ secrets.NEON_GOOGLE_SERVICES_JSON }}
+        run: |
+          python3 - <<'PY'
+          import os, json
+          from pathlib import Path
+          raw = os.environ.get('NEON_GOOGLE_SERVICES_JSON', '')
+          if not raw:
+              raise SystemExit('Missing Firebase configuration secret')
+          data = json.loads(raw)
+          assert data['project_info']['project_id'] == 'gromanof-neon', 'Wrong Firebase project'
+          assert any(c['client_info']['android_client_info']['package_name'] == 'com.gromanof.neon.beta' for c in data['client']), 'Wrong Firebase package'
+          path = Path('TMessagesProj_App/src/debug/google-services.json')
+          path.parent.mkdir(parents=True, exist_ok=True)
+          path.write_text(raw)
+          PY
       - name: Build APK with dedicated API
         env:
           NEON_API_ID: ${{ secrets.NEON_API_ID }}
           NEON_API_HASH: ${{ secrets.NEON_API_HASH }}
         run: |
           if [ -z "$NEON_API_ID" ] || [ -z "$NEON_API_HASH" ]; then
-            echo "Dedicated API not configured; APK build skipped."
-            exit 0
+            echo 'Dedicated API not configured.'
+            exit 1
           fi
           bash tools/neon/build-sandbox.sh
       - uses: actions/upload-artifact@v4
         with:
           name: gromanof-neon-sandbox
           path: TMessagesProj_App/build/outputs/apk/afat/debug/*.apk
-          if-no-files-found: warn
+          if-no-files-found: error
