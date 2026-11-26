@@ -23,6 +23,8 @@ jobs:
         run: |
           bash -n tools/neon/build-sandbox.sh
           python3 -m py_compile tools/neon/configure_api.py
+      - name: Set up Android command line tools
+        uses: android-actions/setup-android@v3
       - name: Install Android SDK
         run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'ndk;27.2.12479018' 'cmake;3.22.1'
       - name: Compile sandbox Java
