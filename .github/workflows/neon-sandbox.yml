@@ -1,4 +1,5 @@
 name: GROMANOF Neon Sandbox
+# Trigger fresh sandbox run after repository secret configuration.
 on:
   push:
     branches: [feature/neon-sandbox]
