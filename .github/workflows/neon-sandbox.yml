@@ -1,0 +1,44 @@
+name: GROMANOF Neon Sandbox
+on:
+  push:
+    branches: [feature/neon-sandbox]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    if: github.ref == 'refs/heads/feature/neon-sandbox'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Validate scripts
+        run: |
+          bash -n tools/neon/build-sandbox.sh
+          python3 -m py_compile tools/neon/configure_api.py
+      - name: Install Android SDK
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'ndk;27.2.12479018' 'cmake;3.22.1'
+      - name: Compile sandbox Java
+        run: bash gradlew :TMessagesProj_App:compileAfatDebugJavaWithJavac --no-daemon
+      - name: Build APK with dedicated API
+        env:
+          NEON_API_ID: ${{ secrets.NEON_API_ID }}
+          NEON_API_HASH: ${{ secrets.NEON_API_HASH }}
+        run: |
+          if [ -z "$NEON_API_ID" ] || [ -z "$NEON_API_HASH" ]; then
+            echo "Dedicated API not configured; APK build skipped."
+            exit 0
+          fi
+          bash tools/neon/build-sandbox.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: gromanof-neon-sandbox
+          path: TMessagesProj_App/build/outputs/apk/afat/debug/*.apk
+          if-no-files-found: ignore
