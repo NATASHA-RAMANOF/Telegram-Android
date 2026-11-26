@@ -30,6 +30,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class MessageDrawable extends Drawable {
+    private org.telegram.ui.neon.NeonBubbleOverlay neonOverlay;
 
     private Shader gradientShader;
     private int currentBackgroundHeight;
@@ -588,7 +589,8 @@ public class MessageDrawable extends Drawable {
             return;
         }
         Rect bounds = getBounds();
-        if (paintToUse == null && paint.getStyle() == Paint.Style.FILL && gradientShader == null && overrideRoundRadius == 0 && overrideRounding <= 0) {
+        boolean neon = paintToUse == null && !renderingBackgroundCache && !isSelected && currentType == TYPE_TEXT && paint.getStyle() == Paint.Style.FILL;
+        if (!neon && paintToUse == null && paint.getStyle() == Paint.Style.FILL && gradientShader == null && overrideRoundRadius == 0 && overrideRounding <= 0) {
             Drawable background = getBackgroundDrawable();
             if (background != null) {
                 background.setBounds(bounds);
@@ -647,6 +649,10 @@ public class MessageDrawable extends Drawable {
         }
 
         canvas.drawPath(path, p);
+        if (neon) {
+            if (neonOverlay == null) neonOverlay = new org.telegram.ui.neon.NeonBubbleOverlay();
+            neonOverlay.draw(canvas, path, AndroidUtilities.density, alpha);
+        }
         if (gradientShader != null && isSelected && paintToUse == null) {
             int color = getColor(Theme.key_chat_outBubbleGradientSelectedOverlay);
             selectedPaint.setColor(ColorUtils.setAlphaComponent(color, (int) (Color.alpha(color) * alpha / 255f)));
