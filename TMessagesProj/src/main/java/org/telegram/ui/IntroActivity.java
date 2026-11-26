@@ -158,7 +158,8 @@ public class IntroActivity extends BaseFragment implements NotificationCenter.No
         logoDrawable.setBounds(0, dp(8.666f), dp(115), dp(35));
         SpannableStringBuilder ssb = new SpannableStringBuilder(LocaleController.getString(R.string.Page1Title));
         ssb.setSpan(new ImageSpan(logoDrawable), 0, ssb.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        titles[0] = ssb;
+        titles[0] = "GROMANOF Neon";
+        messages[0] = "Unofficial Telegram client • Sandbox edition";
 
 
         actionBar.setAddToContainer(false);
@@ -963,11 +964,11 @@ public class IntroActivity extends BaseFragment implements NotificationCenter.No
     }
 
     private void updateColors(boolean fromTheme) {
-        startMessagingButtonBackground.setColors(new int[]{getThemedColor(Theme.key_featuredStickers_addButton), getThemedColor(Theme.key_featuredStickers_addButton2)});
+        startMessagingButtonBackground.setColors(new int[]{0xff790d20, 0xffe51d42});
         logoDrawable.setColorFilter(Theme.multAlpha(getThemedColor(Theme.key_actionBarDefaultTitle), 0.9f), PorterDuff.Mode.MULTIPLY);
         fragmentView.setBackgroundColor(Theme.getColor(Theme.key_windowBackgroundWhite));
         switchLanguageTextView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlueText4));
-        startMessagingButton.setTextColor(Theme.getColor(Theme.key_featuredStickers_buttonText));
+        startMessagingButton.setTextColor(Color.WHITE);
         startMessagingButton.setBackground(Theme.createSimpleSelectorRoundRectDrawable(dp(24), Color.TRANSPARENT, Theme.getColor(Theme.key_featuredStickers_addButtonPressed)));
         darkThemeDrawable.setColorFilter(new PorterDuffColorFilter(Theme.getColor(Theme.key_featuredStickers_addButton), PorterDuff.Mode.SRC_IN));
         bottomPages.invalidate();
@@ -1011,8 +1012,8 @@ public class IntroActivity extends BaseFragment implements NotificationCenter.No
             if (fragmentView == null) {
                 return;
             }
-            final int buttonColor1 = getThemedColor(Theme.key_featuredStickers_addButton);
-            final int buttonColor2 = getThemedColor(Theme.key_featuredStickers_addButton2);
+            final int buttonColor1 = 0xff790d20;
+            final int buttonColor2 = 0xffe51d42;
             if (startMessagingButtonBackground != null && (buttonColor1 != lastButtonColor1 || buttonColor2 != lastButtonColor2)) {
                 lastButtonColor1 = buttonColor1;
                 lastButtonColor2 = buttonColor2;
@@ -1028,7 +1029,7 @@ public class IntroActivity extends BaseFragment implements NotificationCenter.No
                 switchLanguageTextView.setTextColor(Theme.getColor(Theme.key_windowBackgroundWhiteBlueText4));
             }
             if (startMessagingButton != null) {
-                startMessagingButton.setTextColor(Theme.getColor(Theme.key_featuredStickers_buttonText));
+                startMessagingButton.setTextColor(Color.WHITE);
                 Theme.setSelectorDrawableColor(startMessagingButton.getBackground(), Theme.getColor(Theme.key_featuredStickers_addButtonPressed), true);
             }
             final int darkThemeColor = Theme.getColor(Theme.key_featuredStickers_addButton);
