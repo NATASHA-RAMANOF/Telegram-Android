@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/../.."
-test "$(git branch --show-current)" = "feature/neon-sandbox" || { echo "Use sandbox branch only"; exit 1; }
-test -z "$(git status --porcelain)" || { echo "Use a clean disposable checkout"; exit 1; }
+test "${GITHUB_REF_NAME:-$(git branch --show-current)}" = "feature/neon-sandbox" || { echo "Use sandbox branch only"; exit 1; }
+test -z "$(git status --porcelain --untracked-files=no)" || { echo "Use a clean disposable checkout"; exit 1; }
 : "${NEON_API_ID:?Set dedicated API ID}"
 : "${NEON_API_HASH:?Set dedicated API hash}"
 test -n "${ANDROID_HOME:-}" || { echo "Android SDK required"; exit 1; }
